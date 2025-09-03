@@ -20,8 +20,11 @@ public class Main extends Application {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
     private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
 
+    private Duke duke = new Duke();
+
     @Override
     public void start(Stage stage) {
+        // Set up components
         scrollPane = new ScrollPane();
         dialogContainer = new VBox();
         scrollPane.setContent(dialogContainer);
@@ -29,14 +32,12 @@ public class Main extends Application {
         userInput = new TextField();
         sendButton = new Button("Send");
 
-        DialogBox dialogBox = new DialogBox("Hello!", userImage);
-        dialogContainer.getChildren().addAll(dialogBox);
-
         AnchorPane mainLayout = new AnchorPane();
         mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
 
         scene = new Scene(mainLayout);
 
+        // Format window
         stage.setScene(scene);
         stage.setTitle("Duke");
         stage.setResizable(false);
@@ -48,24 +49,40 @@ public class Main extends Application {
         scrollPane.setPrefSize(385, 535);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
         scrollPane.setVvalue(1.0);
         scrollPane.setFitToWidth(true);
 
         dialogContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
         userInput.setPrefWidth(325);
-
         sendButton.setPrefWidth(55);
 
         AnchorPane.setTopAnchor(scrollPane, 1.0);
-
         AnchorPane.setBottomAnchor(sendButton, 1.0);
         AnchorPane.setRightAnchor(sendButton, 1.0);
-
         AnchorPane.setLeftAnchor(userInput, 1.0);
         AnchorPane.setBottomAnchor(userInput, 1.0);
 
+        // Handle user input
+        sendButton.setOnMouseClicked((event) -> {
+            handleUserInput();
+        });
+        userInput.setOnAction((event) -> {
+            handleUserInput();
+        });
+
+        // Autoscroll to the bottom every time dialogContainer's height changes
+        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
+
         stage.show();
+    }
+
+    private void handleUserInput() {
+        String userText = userInput.getText();
+        String dukeText = duke.getResponse(userText);
+        dialogContainer.getChildren().addAll(
+                new DialogBox(userText, userImage),
+                new DialogBox(dukeText, dukeImage)
+        );
+        userInput.clear();
     }
 }
