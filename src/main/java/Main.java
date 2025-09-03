@@ -38,8 +38,6 @@ public class Main extends Application {
         scene = new Scene(mainLayout);
 
         stage.setScene(scene);
-        stage.show();
-
         stage.setTitle("Duke");
         stage.setResizable(false);
         stage.setMinHeight(600);
@@ -67,5 +65,7 @@ public class Main extends Application {
 
         AnchorPane.setLeftAnchor(userInput, 1.0);
         AnchorPane.setBottomAnchor(userInput, 1.0);
+
+        stage.show();
     }
 }
